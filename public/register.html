@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب | KuroNeko</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>body{font-family:'Tajawal',sans-serif;background:#0B0D10;color:#E7ECF0}</style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <span class="font-bold text-xl text-teal-400">KuroNeko</span>
+    </div>
+    <div class="bg-[#12151A] border border-[#232830] rounded-2xl p-8">
+      <h1 class="text-lg font-semibold mb-6 text-center">إنشاء حساب جديد</h1>
+
+      <div class="flex flex-col gap-3 mb-6">
+        <a href="/api/auth/github" class="flex items-center justify-center gap-2 border border-[#232830] rounded-xl py-2.5 text-sm hover:border-teal-400/40 transition">
+          <i class="fa-brands fa-github"></i> المتابعة عبر GitHub
+        </a>
+        <a href="/api/auth/google" class="flex items-center justify-center gap-2 border border-[#232830] rounded-xl py-2.5 text-sm hover:border-teal-400/40 transition">
+          <i class="fa-brands fa-google"></i> المتابعة عبر Google
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="h-px flex-1 bg-[#232830]"></div>
+        <span class="text-xs text-gray-500">أو عبر البريد</span>
+        <div class="h-px flex-1 bg-[#232830]"></div>
+      </div>
+
+      <form id="registerForm" class="flex flex-col gap-4">
+        <input type="text" id="name" required placeholder="الاسم" class="bg-[#0B0D10] border border-[#232830] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400">
+        <input type="email" id="email" required placeholder="البريد الإلكتروني" class="bg-[#0B0D10] border border-[#232830] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400">
+        <input type="password" id="password" required minlength="8" placeholder="كلمة المرور (8 أحرف على الأقل)" class="bg-[#0B0D10] border border-[#232830] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400">
+        <p id="msg" class="text-sm hidden"></p>
+        <button type="submit" class="bg-teal-400 text-[#0B0D10] font-medium rounded-xl py-2.5 text-sm hover:bg-teal-300 transition">إنشاء حساب</button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-6">
+        لديك حساب بالفعل؟ <a href="/login" class="text-teal-400 hover:underline">تسجيل الدخول</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('msg');
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.message || 'حدث خطأ.';
+        msg.className = 'text-sm text-red-400';
+        return;
+      }
+      location.href = '/account';
+    });
+  </script>
+</body>
+</html>
