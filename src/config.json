@@ -74,6 +74,25 @@
         "filename": "google-callback",
         "method": "GET",
         "params": []
+      },
+      {
+        "name": "نسيت كلمة المرور",
+        "endpoint": "/api/auth/forgot-password",
+        "filename": "forgot-password",
+        "method": "POST",
+        "params": [
+          { "name": "email", "required": true, "description": "البريد الإلكتروني" }
+        ]
+      },
+      {
+        "name": "إعادة تعيين كلمة المرور",
+        "endpoint": "/api/auth/reset-password",
+        "filename": "reset-password",
+        "method": "POST",
+        "params": [
+          { "name": "token", "required": true, "description": "رمز إعادة التعيين" },
+          { "name": "password", "required": true, "description": "كلمة المرور الجديدة" }
+        ]
       }
     ],
     "ai": [
