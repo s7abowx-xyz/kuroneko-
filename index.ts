@@ -191,6 +191,8 @@ app.get('/config', (req: Request, res: Response) => {
     } catch (error) { res.status(500).json({ creator: config.settings.creator, error: "خطأ داخلي بالسيرفر" }); }
 });
 app.get('/', (req: Request, res: Response) => {
+    const session = getSession(req);
+    if (!session) return res.redirect('/login');
     incrementVisitor();
     res.sendFile(path.join(process.cwd(), 'public', 'landing.html'));
 });
