@@ -5,46 +5,99 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تسجيل الدخول | KuroNeko</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>body{font-family:'Tajawal',sans-serif;background:#0B0D10;color:#E7ECF0}</style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: radial-gradient(ellipse at top, #0d2b28 0%, #05100e 55%, #030807 100%);
+    color: #E7ECF0;
+    min-height: 100vh;
+  }
+  .card {
+    background: rgba(10, 22, 20, 0.85);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.08), inset 0 0 60px rgba(45, 212, 191, 0.03);
+    backdrop-filter: blur(6px);
+  }
+  .banner {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .banner::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(5,16,14,1) 0%, rgba(5,16,14,0.1) 60%);
+  }
+  .field {
+    background: rgba(5, 16, 14, 0.6);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+  }
+  .field:focus-within { border-color: #2dd4bf; }
+  .badge-dot { box-shadow: 0 0 8px #2dd4bf; }
+</style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4">
-  <div class="w-full max-w-md">
-    <div class="text-center mb-6">
-      <span class="font-bold text-xl text-teal-400">KuroNeko</span>
-    </div>
-    <div class="bg-[#12151A] border border-[#232830] rounded-2xl p-8">
-      <h1 class="text-lg font-semibold mb-6 text-center">تسجيل الدخول</h1>
+<body class="flex items-center justify-center px-4 py-10">
+  <div class="w-full max-w-sm">
+    <div class="card rounded-2xl overflow-hidden">
+      <div class="banner h-32" style="background-image:url('/images/banner.jpg')"></div>
 
-      <div class="flex flex-col gap-3 mb-6">
-        <a href="/api/auth/github" class="flex items-center justify-center gap-2 border border-[#232830] rounded-xl py-2.5 text-sm hover:border-teal-400/40 transition">
-          <i class="fa-brands fa-github"></i> المتابعة عبر GitHub
-        </a>
-        <a href="/api/auth/google" class="flex items-center justify-center gap-2 border border-[#232830] rounded-xl py-2.5 text-sm hover:border-teal-400/40 transition">
-          <i class="fa-brands fa-google"></i> المتابعة عبر Google
-        </a>
+      <div class="p-6 -mt-2 relative">
+        <h1 class="text-lg font-bold text-teal-300 mb-1">واجهة برمجة تطبيقات KuroNeko</h1>
+        <div class="h-0.5 w-10 bg-teal-400 rounded-full mb-3"></div>
+
+        <div class="flex flex-col gap-1 mb-4 text-[11px] text-teal-400/80">
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-teal-400 badge-dot"></span> نظام آمن</span>
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-teal-400"></i> اتصال مشفر</span>
+        </div>
+
+        <form id="loginForm" class="flex flex-col gap-3">
+          <div class="field rounded-xl flex items-center gap-2 px-3.5 py-2.5">
+            <i class="fa-solid fa-user text-teal-400/60 text-sm"></i>
+            <input type="email" id="email" required placeholder="اسم المستخدم أو عنوان البريد الإلكتروني" class="bg-transparent flex-1 text-sm focus:outline-none placeholder:text-gray-500">
+          </div>
+          <div class="field rounded-xl flex items-center gap-2 px-3.5 py-2.5">
+            <i class="fa-solid fa-key text-teal-400/60 text-sm"></i>
+            <input type="password" id="password" required placeholder="كلمة المرور" class="bg-transparent flex-1 text-sm focus:outline-none placeholder:text-gray-500">
+          </div>
+
+          <label class="flex items-center gap-2 text-xs text-gray-400 mt-1">
+            <input type="checkbox" class="accent-teal-400"> تذكرني
+          </label>
+
+          <div class="cf-turnstile" data-sitekey="__TURNSTILE_SITE_KEY__" data-theme="dark"></div>
+
+          <p id="msg" class="text-xs hidden"></p>
+
+          <button type="submit" class="bg-teal-400 text-[#05100e] font-bold rounded-xl py-2.5 text-sm mt-1 hover:bg-teal-300 transition flex items-center justify-center gap-2">
+            تحقق من الوصول <i class="fa-solid fa-arrow-left"></i>
+          </button>
+        </form>
+
+        <div class="flex items-center gap-3 my-5">
+          <div class="h-px flex-1 bg-teal-400/15"></div>
+          <span class="text-[11px] text-gray-500">أو تابع مع</span>
+          <div class="h-px flex-1 bg-teal-400/15"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-5">
+          <a href="/api/auth/github" class="field rounded-xl flex items-center justify-center gap-2 py-2.5 text-sm hover:border-teal-400/50 transition">
+            <i class="fa-brands fa-github"></i> جيت هاب
+          </a>
+          <a href="/api/auth/google" class="field rounded-xl flex items-center justify-center gap-2 py-2.5 text-sm hover:border-teal-400/50 transition">
+            <i class="fa-brands fa-google"></i> جوجل
+          </a>
+        </div>
+
+        <div class="text-center text-xs text-gray-500 flex flex-col gap-1">
+          <span>ليس لديك حساب؟ <a href="/register" class="text-teal-400 hover:underline">سجّل حسابًا</a></span>
+        </div>
       </div>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="h-px flex-1 bg-[#232830]"></div>
-        <span class="text-xs text-gray-500">أو عبر البريد</span>
-        <div class="h-px flex-1 bg-[#232830]"></div>
-      </div>
-
-      <form id="loginForm" class="flex flex-col gap-4">
-        <input type="email" id="email" required placeholder="البريد الإلكتروني" class="bg-[#0B0D10] border border-[#232830] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400">
-        <input type="password" id="password" required placeholder="كلمة المرور" class="bg-[#0B0D10] border border-[#232830] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-400">
-        <p id="msg" class="text-sm hidden"></p>
-        <button type="submit" class="bg-teal-400 text-[#0B0D10] font-medium rounded-xl py-2.5 text-sm hover:bg-teal-300 transition">تسجيل الدخول</button>
-      </form>
-
-      <p class="text-center text-sm text-gray-500 mt-6">
-        ليس لديك حساب؟ <a href="/register" class="text-teal-400 hover:underline">إنشاء حساب</a>
-      </p>
     </div>
   </div>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     const params = new URLSearchParams(location.search);
     const callbackUrl = params.get('callbackUrl') || '/account';
@@ -57,24 +110,26 @@
     if (err && errMap[err]) {
       const msg = document.getElementById('msg');
       msg.textContent = errMap[err];
-      msg.className = 'text-sm text-red-400';
+      msg.className = 'text-xs text-red-400';
     }
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const msg = document.getElementById('msg');
+      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: document.getElementById('email').value,
           password: document.getElementById('password').value,
+          'cf-turnstile-response': turnstileToken,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
         msg.textContent = data.message || 'حدث خطأ.';
-        msg.className = 'text-sm text-red-400';
+        msg.className = 'text-xs text-red-400';
         return;
       }
       location.href = callbackUrl;
