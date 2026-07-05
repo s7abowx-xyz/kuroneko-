@@ -100,7 +100,7 @@
 
   <script>
     const params = new URLSearchParams(location.search);
-    const callbackUrl = params.get('callbackUrl') || '/account';
+    const callbackUrl = params.get('callbackUrl') || '/';
     const errMap = {
       oauth_state: 'فشل التحقق الأمني، حاول مرة أخرى.',
       no_email: 'لم نتمكن من الحصول على بريدك الإلكتروني من مزود الدخول.',
