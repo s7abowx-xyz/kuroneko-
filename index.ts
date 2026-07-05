@@ -1,3 +1,6 @@
+/*
+  Danzz For You 💌
+*/
 import 'dotenv/config';
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -103,8 +106,21 @@ app.get('/verify', (req: Request, res: Response) => {
     res.sendFile(path.join(process.cwd(), 'public', 'verify.html'));
 });
 
-app.get('/login', (req: Request, res: Response) => { res.sendFile(path.join(process.cwd(), 'public', 'login.html')); });
-app.get('/register', (req: Request, res: Response) => { res.sendFile(path.join(process.cwd(), 'public', 'register.html')); });
+function sendWithTurnstileKey(res: Response, filePath: string) {
+    fs.readFile(filePath, 'utf-8', (err, html) => {
+        if (err) return res.status(500).send('Page not found');
+        const siteKey = process.env.TURNSTILE_SITE_KEY || '1x00000000000000000000AA'; // Cloudflare's public test key
+        res.send(html.replaceAll('__TURNSTILE_SITE_KEY__', siteKey));
+    });
+}
+
+app.get('/login', (req: Request, res: Response) => { sendWithTurnstileKey(res, path.join(process.cwd(), 'public', 'login.html')); });
+app.get('/register', (req: Request, res: Response) => { sendWithTurnstileKey(res, path.join(process.cwd(), 'public', 'register.html')); });
+app.get('/forgot-password', (req: Request, res: Response) => { res.sendFile(path.join(process.cwd(), 'public', 'forgot-password.html')); });
+app.get('/reset-password', (req: Request, res: Response) => { res.sendFile(path.join(process.cwd(), 'public', 'reset-password.html')); });
+app.get('/api/config/turnstile-site-key', (req: Request, res: Response) => {
+    res.json({ siteKey: process.env.TURNSTILE_SITE_KEY || '' });
+});
 app.get('/account', (req: Request, res: Response) => {
     const session = getSession(req);
     if (!session) return res.redirect('/login?callbackUrl=/account');
