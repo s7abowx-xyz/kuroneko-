@@ -5,6 +5,12 @@ import { Application, Request, Response, NextFunction } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { logRouterRequest } from './logger';
+import { requireApiKey } from './api-key';
+
+// Categories whose endpoints require a valid API key (?apikey= or x-api-key header).
+// "auth" and "ai" are excluded: auth is how you get a key in the first place,
+// and ai is gated by the logged-in session instead.
+const API_KEY_PROTECTED_CATEGORIES = ['maker', 'random', 'tools', 'download', 'search'];
 
 let regRouter = new Set<string>();
 let currentConfig: any = null;
@@ -153,6 +159,11 @@ const registerRoute = (route: any, category: string, creatorName?: string, app?:
                     };
 
                     try {
+                        if (API_KEY_PROTECTED_CATEGORIES.includes(category)) {
+                            let passed = false;
+                            await requireApiKey(req, res, () => { passed = true; });
+                            if (!passed) return; // requireApiKey already sent the error response
+                        }
                         await handler(req, res, next);
                     } catch (err) {
                         console.error(`Error in route ${route.endpoint}:`, err);

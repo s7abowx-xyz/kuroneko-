@@ -48,6 +48,13 @@
         "params": []
       },
       {
+        "name": "تجديد مفتاح API",
+        "endpoint": "/api/auth/regenerate-key",
+        "filename": "regenerate-key",
+        "method": "POST",
+        "params": []
+      },
+      {
         "name": "نسيت كلمة المرور",
         "endpoint": "/api/auth/forgot-password",
         "filename": "forgot-password",
