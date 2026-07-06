@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../../src/prisma';
 import { hashPassword, signSession, setSessionCookie } from '../../src/auth-utils';
 import { verifyTurnstile } from '../../src/turnstile';
+import { generateApiKey } from '../../src/api-key';
 
 export default async function registerHandler(req: Request, res: Response) {
   const { name, email, password } = req.body || {};
@@ -26,7 +27,7 @@ export default async function registerHandler(req: Request, res: Response) {
 
   const hashed = await hashPassword(password);
   const user = await prisma.user.create({
-    data: { name, email, password: hashed },
+    data: { name, email, password: hashed, apiKey: generateApiKey() },
   });
 
   const token = signSession({ id: user.id, name: user.name, email: user.email, role: user.role });
