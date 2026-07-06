@@ -11,6 +11,7 @@ import os from 'os';
 import { loadRouter, initAutoLoad } from './src/autoload';
 import { issueChallenge, verifySolution, issuePass, isPassValid, PASS_COOKIE_NAME, PASS_MAX_AGE_MS } from './src/security';
 import { getSession } from './src/auth-utils';
+import { prisma } from './src/prisma';
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 app.set('trust proxy', true);
@@ -190,13 +191,25 @@ app.get('/config', (req: Request, res: Response) => {
         res.json({ creator: config.settings.creator, ...currentConfig });
     } catch (error) { res.status(500).json({ creator: config.settings.creator, error: "خطأ داخلي بالسيرفر" }); }
 });
+app.get('/api/stats/platform', async (req: Request, res: Response) => {
+    try {
+        const totalUsers = await prisma.user.count();
+        res.json({ status: true, totalUsers });
+    } catch (error) {
+        res.status(500).json({ status: false, message: 'خطأ داخلي بالسيرفر' });
+    }
+});
 app.get('/', (req: Request, res: Response) => {
     const session = getSession(req);
     if (!session) return res.redirect('/login');
     incrementVisitor();
     res.sendFile(path.join(process.cwd(), 'public', 'landing.html'));
 });
-app.get('/docs', (req: Request, res: Response) => { res.sendFile(path.join(process.cwd(), 'public', 'docs.html')); });
+app.get('/docs', (req: Request, res: Response) => {
+    const session = getSession(req);
+    if (!session) return res.redirect('/login?callbackUrl=/docs');
+    res.sendFile(path.join(process.cwd(), 'public', 'docs.html'));
+});
 app.use((req: Request, res: Response) => {
     if (req.accepts('html')) {
         const possible404 = [path.join(process.cwd(), 'public', '404.html'), path.join(__dirname, 'public', '404.html')];
