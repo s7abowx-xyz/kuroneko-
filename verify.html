@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التحقق من الأمان</title>
+<style>
+  body { font-family: 'Tajawal', sans-serif; background:#0B0D10; color:#E7ECF0; margin:0; }
+  .wrap { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:40px 20px; }
+  .box { max-width:420px; width:100%; text-align:right; }
+  .brand { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-bottom:12px; font-family:monospace; font-size:18px; font-weight:600; }
+  h1 { font-size:16px; font-weight:500; margin:0 0 4px; }
+  p { font-size:12px; color:#8A94A3; line-height:1.6; margin:0; }
+  .status { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:24px; font-size:14px; }
+  .spinner { width:14px; height:14px; border:2px solid #232830; border-top-color:#5EEAD4; border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ok { color:#5EEAD4; }
+  .err { color:#F87171; }
+  .footer { margin-top:40px; font-size:11px; color:#8A94A340; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="box">
+      <div class="brand">KuroNeko 🛡️</div>
+      <h1>إجراء التحقق من الأمان</h1>
+      <p>يستخدم هذا الموقع خدمة أمنية للحماية من برامج الروبوتات الضارة. يتم عرض هذه الصفحة بينما يتحقق الموقع من أنك لست روبوتًا.</p>
+      <div class="status" id="status">
+        <span>جاري الاتصال بخدمة التحقق...</span>
+        <div class="spinner"></div>
+      </div>
+      <div class="footer" id="rayId"></div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const callbackUrl = params.get('callbackUrl') || '/';
+    document.getElementById('rayId').textContent = 'Ray ID: ' + Math.random().toString(16).slice(2, 10) + ' · محمي بواسطة KuroNeko Security';
+
+    async function sha256Hex(str) {
+      const data = new TextEncoder().encode(str);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function solvePow(nonce, difficulty) {
+      const prefix = '0'.repeat(difficulty);
+      let counter = 0;
+      while (true) {
+        const solution = counter.toString(36);
+        const hash = await sha256Hex(`${nonce}:${solution}`);
+        if (hash.startsWith(prefix)) return solution;
+        counter++;
+        if (counter % 500 === 0) await new Promise(r => setTimeout(r, 0));
+      }
+    }
+
+    async function run() {
+      const statusEl = document.getElementById('status');
+      try {
+        const res = await fetch('/api/security/challenge');
+        const { nonce, difficulty, token } = await res.json();
+
+        statusEl.innerHTML = '<span>في انتظار KuroNeko للاستجابة...</span><div class="spinner"></div>';
+        const solution = await solvePow(nonce, difficulty);
+
+        const verifyRes = await fetch('/api/security/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, solution }),
+        });
+        if (!verifyRes.ok) throw new Error('failed');
+
+        statusEl.innerHTML = '<span class="ok">نجح التحقق. جاري تحويلك الآن...</span>';
+        setTimeout(() => { location.href = callbackUrl; }, 600);
+      } catch (e) {
+        statusEl.innerHTML = '<span class="err">تعذّر التحقق. حاول تحديث الصفحة.</span>';
+      }
+    }
+    run();
+  </script>
+</body>
+</html>

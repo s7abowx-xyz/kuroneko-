@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حسابي | KuroNeko</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: radial-gradient(ellipse at top, #0d2b28 0%, #05100e 45%, #030807 100%);
+    background-attachment: fixed;
+    color: #E7ECF0;
+    min-height: 100vh;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .card { background: rgba(10, 22, 20, 0.7); border: 1px solid rgba(45, 212, 191, 0.15); }
+  .drawer { transition: transform 0.25s ease; }
+  .drawer.closed { transform: translateX(100%); }
+  .overlay { transition: opacity 0.25s ease; }
+</style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="flex items-center justify-between px-4 py-3 border-b border-teal-400/10 sticky top-0 bg-[#05100e]/90 backdrop-blur z-30">
+    <button id="menuBtn" class="text-teal-400 text-lg"><i class="fa-solid fa-bars"></i></button>
+    <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+    <a href="/" class="text-gray-500 hover:text-teal-400"><i class="fa-solid fa-house"></i></a>
+  </header>
+
+  <!-- Drawer -->
+  <div id="overlay" class="overlay fixed inset-0 bg-black/60 z-40 hidden"></div>
+  <aside id="drawer" class="drawer closed fixed top-0 right-0 h-full w-64 bg-[#0a1614] border-l border-teal-400/15 z-50 flex flex-col">
+    <div class="p-5 border-b border-teal-400/10">
+      <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+    </div>
+    <nav class="flex-1 overflow-y-auto p-3 text-sm">
+      <p class="text-[11px] text-gray-500 px-2 mt-2 mb-1">البداية</p>
+      <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-house w-4 text-teal-400"></i> الرئيسية</a>
+      <a href="/account" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-400/10 text-teal-300"><i class="fa-solid fa-user w-4"></i> حسابي</a>
+      <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-book w-4 text-teal-400"></i> التوثيق</a>
+      <a href="/stats" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-chart-pie w-4 text-teal-400"></i> الإحصائيات</a>
+
+      <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الفئات</p>
+      <div id="categoryLinks"></div>
+
+      <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الحساب</p>
+      <button id="logoutBtn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-500/10 text-red-400"><i class="fa-solid fa-right-from-bracket w-4"></i> تسجيل الخروج</button>
+    </nav>
+  </aside>
+
+  <main class="max-w-2xl mx-auto px-5 py-8">
+    <div id="loading" class="text-center text-sm text-gray-500 py-20">جاري التحميل...</div>
+
+    <div id="content" class="hidden">
+      <img src="/images/banner.jpg" class="w-full h-40 object-cover rounded-2xl mb-4">
+      <h1 class="text-xl font-black mb-1">أهلاً، <span id="userName" class="text-teal-300"></span> 👋</h1>
+      <p class="text-xs text-gray-500 mb-6" id="userEmail"></p>
+
+      <h2 class="text-sm font-bold text-gray-400 mb-3">معلومات مفيدة</h2>
+
+      <!-- API Key card -->
+      <div class="card rounded-xl p-4 mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-400">مفتاح API الخاص بي</span>
+          <div class="flex gap-2">
+            <button id="revealBtn" class="text-xs bg-teal-400/10 text-teal-300 px-2.5 py-1 rounded-lg">إظهار</button>
+            <button id="copyBtn" class="text-xs bg-gray-500/10 text-gray-300 px-2.5 py-1 rounded-lg">نسخ</button>
+          </div>
+        </div>
+        <div id="apiKeyBox" class="mono text-sm text-teal-300 truncate">••••••••••••••••••••••••••••••••</div>
+        <button id="regenBtn" class="text-[11px] text-red-400 mt-2 hover:underline">تجديد المفتاح (يلغي القديم فوراً)</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div class="card rounded-xl p-4">
+          <div class="text-xs text-gray-400 mb-1">الدور</div>
+          <div class="text-sm font-bold" id="userRole">-</div>
+        </div>
+        <div class="card rounded-xl p-4">
+          <div class="text-xs text-gray-400 mb-1">تاريخ الانضمام</div>
+          <div class="text-sm font-bold" id="userJoined">-</div>
+        </div>
+      </div>
+
+      <h2 class="text-sm font-bold text-gray-400 mb-3 mt-6">المنصة</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="card rounded-xl p-4">
+          <div class="text-xs text-gray-400 mb-1">إجمالي المستخدمين</div>
+          <div class="text-lg font-black mono" id="totalUsers">-</div>
+        </div>
+        <div class="card rounded-xl p-4">
+          <div class="text-xs text-gray-400 mb-1">الوحدات المتاحة</div>
+          <div class="text-lg font-black mono" id="totalModules">-</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    function openDrawer() { drawer.classList.remove('closed'); overlay.classList.remove('hidden'); }
+    function closeDrawer() { drawer.classList.add('closed'); overlay.classList.add('hidden'); }
+    menuBtn.addEventListener('click', openDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    let fullApiKey = '';
+    let revealed = false;
+
+    fetch('/api/auth/me').then(r => r.json()).then(data => {
+      document.getElementById('loading').classList.add('hidden');
+      if (!data.status) { location.href = '/login?callbackUrl=/account'; return; }
+
+      document.getElementById('content').classList.remove('hidden');
+      document.getElementById('userName').innerText = data.user.name;
+      document.getElementById('userEmail').innerText = data.user.email;
+      document.getElementById('userRole').innerText = data.user.role === 'ADMIN' ? 'مسؤول' : 'مستخدم';
+      document.getElementById('userJoined').innerText = new Date(data.user.createdAt).toLocaleDateString('ar-EG');
+
+      fullApiKey = data.user.apiKey;
+    });
+
+    fetch('/api/stats/platform').then(r => r.json()).then(d => {
+      if (d.status) document.getElementById('totalUsers').innerText = d.totalUsers;
+    });
+
+    fetch('/config').then(r => r.json()).then(config => {
+      const tags = config.tags || {};
+      const keys = Object.keys(tags);
+      document.getElementById('totalModules').innerText = keys.length;
+
+      const icons = { auth: 'fa-shield-halved', ai: 'fa-robot', maker: 'fa-wand-magic-sparkles', random: 'fa-shuffle', tools: 'fa-toolbox', download: 'fa-download', search: 'fa-magnifying-glass' };
+      const labels = { auth: 'الحسابات', ai: 'الذكاء الاصطناعي', maker: 'أدوات الصنع', random: 'عشوائي', tools: 'أدوات عامة', download: 'تحميل', search: 'بحث' };
+      const container = document.getElementById('categoryLinks');
+      keys.filter(k => k !== 'auth').forEach(k => {
+        container.innerHTML += `<a href="/docs#${k}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid ${icons[k] || 'fa-cube'} w-4 text-teal-400"></i> ${labels[k] || k}</a>`;
+      });
+    });
+
+    document.getElementById('revealBtn').addEventListener('click', () => {
+      revealed = !revealed;
+      document.getElementById('apiKeyBox').innerText = revealed ? fullApiKey : '••••••••••••••••••••••••••••••••';
+      document.getElementById('revealBtn').innerText = revealed ? 'إخفاء' : 'إظهار';
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(fullApiKey);
+      const btn = document.getElementById('copyBtn');
+      const old = btn.innerText;
+      btn.innerText = 'تم النسخ ✓';
+      setTimeout(() => { btn.innerText = old; }, 1500);
+    });
+
+    document.getElementById('regenBtn').addEventListener('click', async () => {
+      if (!confirm('سيتوقف مفتاحك الحالي عن العمل فوراً. متأكد؟')) return;
+      const res = await fetch('/api/auth/regenerate-key', { method: 'POST' });
+      const data = await res.json();
+      if (data.status) {
+        fullApiKey = data.apiKey;
+        revealed = true;
+        document.getElementById('apiKeyBox').innerText = fullApiKey;
+        document.getElementById('revealBtn').innerText = 'إخفاء';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      location.href = '/login';
+    });
+  </script>
+</body>
+</html>
