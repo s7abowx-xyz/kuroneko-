@@ -1,0 +1,183 @@
+{
+  "settings": {
+    "creator": "Danzz",
+    "apiName": "KuroNeko",
+    "description": "خدمة API مجانية وموثوقة مصممة لتطوير التطبيقات الحديثة. مبنية باستخدام Node.js وTypeScript، بأداء سريع، ونقاط وصول مستقرة، وتكامل سهل.",
+    "apiVersion": "v1.0",
+    "visitors": "0",
+    "favicon": "/src/danzz.jpg",
+    "thumbnail": "/src/thumbnail.jpg",
+    "channelUrl": "https://whatsapp.com/channel/0029VbBQG1n3QxRsqN7XkS06",
+    "github": "https://github.com/DanzzAraAra"
+  },
+  "tags": {
+    "auth": [
+      {
+        "name": "إنشاء حساب",
+        "endpoint": "/api/auth/register",
+        "filename": "register",
+        "method": "POST",
+        "params": [
+          { "name": "name", "required": true, "description": "الاسم" },
+          { "name": "email", "required": true, "description": "البريد الإلكتروني" },
+          { "name": "password", "required": true, "description": "كلمة المرور (8 أحرف على الأقل)" }
+        ]
+      },
+      {
+        "name": "تسجيل الدخول",
+        "endpoint": "/api/auth/login",
+        "filename": "login",
+        "method": "POST",
+        "params": [
+          { "name": "email", "required": true, "description": "البريد الإلكتروني" },
+          { "name": "password", "required": true, "description": "كلمة المرور" }
+        ]
+      },
+      {
+        "name": "تسجيل الخروج",
+        "endpoint": "/api/auth/logout",
+        "filename": "logout",
+        "method": "POST",
+        "params": []
+      },
+      {
+        "name": "بيانات المستخدم الحالي",
+        "endpoint": "/api/auth/me",
+        "filename": "me",
+        "method": "GET",
+        "params": []
+      },
+      {
+        "name": "نسيت كلمة المرور",
+        "endpoint": "/api/auth/forgot-password",
+        "filename": "forgot-password",
+        "method": "POST",
+        "params": [
+          { "name": "email", "required": true, "description": "البريد الإلكتروني" }
+        ]
+      },
+      {
+        "name": "إعادة تعيين كلمة المرور",
+        "endpoint": "/api/auth/reset-password",
+        "filename": "reset-password",
+        "method": "POST",
+        "params": [
+          { "name": "token", "required": true, "description": "رمز إعادة التعيين" },
+          { "name": "password", "required": true, "description": "كلمة المرور الجديدة" }
+        ]
+      }
+    ],
+    "ai": [
+      {
+        "name": "محادثة KuroNeko",
+        "endpoint": "/api/ai/kuroneko",
+        "filename": "kuroneko",
+        "method": "GET",
+        "params": [
+          { "name": "q", "required": true, "description": "السؤال" },
+          { "name": "provider", "required": false, "description": "anthropic | openai | gemini" }
+        ]
+      }
+    ],
+    "maker": [
+      {
+        "name": "مولّد Brat",
+        "endpoint": "/api/maker/brat",
+        "filename": "brat",
+        "method": "GET",
+        "params": [
+          { "name": "text", "required": true, "description": "النص" }
+        ]
+      }
+    ],
+    "random": [
+      {
+        "name": "صورة Waifu عشوائية",
+        "endpoint": "/api/random/waifu",
+        "filename": "waifu",
+        "method": "GET",
+        "params": []
+      }
+    ],
+    "tools": [
+      {
+        "name": "لقطة شاشة لموقع",
+        "endpoint": "/api/tools/ssweb",
+        "filename": "ssweb",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "رابط الموقع" },
+          { "name": "type", "required": false, "description": "mobile | desktop" }
+        ]
+      },
+      {
+        "name": "اختصار رابط",
+        "endpoint": "/api/tools/shorturl",
+        "filename": "shorturl",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "الرابط الأصلي" },
+          { "name": "alias", "required": false, "description": "اسم مخصص" }
+        ]
+      }
+    ],
+    "download": [
+      {
+        "name": "تحميل من فيسبوك",
+        "endpoint": "/api/download/facebook",
+        "filename": "facebook",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "رابط فيسبوك" }
+        ]
+      },
+      {
+        "name": "تحميل من إنستقرام",
+        "endpoint": "/api/download/instagram",
+        "filename": "instagram",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "رابط إنستقرام" }
+        ]
+      },
+      {
+        "name": "تحميل من تيك توك",
+        "endpoint": "/api/download/tiktok",
+        "filename": "tiktok",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "رابط تيك توك" }
+        ]
+      }
+    ],
+    "search": [
+      {
+        "name": "بحث يوتيوب",
+        "endpoint": "/api/search/yts",
+        "filename": "yts",
+        "method": "GET",
+        "params": [
+          { "name": "q", "required": true, "description": "الكلمة المفتاحية" }
+        ]
+      },
+      {
+        "name": "بحث تيك توك",
+        "endpoint": "/api/search/tiktok",
+        "filename": "tiktok",
+        "method": "GET",
+        "params": [
+          { "name": "q", "required": true, "description": "الكلمة المفتاحية" }
+        ]
+      },
+      {
+        "name": "بحث بينترست",
+        "endpoint": "/api/search/pinterest",
+        "filename": "pinterest",
+        "method": "GET",
+        "params": [
+          { "name": "q", "required": true, "description": "الكلمة المفتاحية" }
+        ]
+      }
+    ]
+  }
+}
