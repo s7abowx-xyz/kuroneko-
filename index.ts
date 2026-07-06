@@ -123,9 +123,7 @@ app.get('/api/config/turnstile-site-key', (req: Request, res: Response) => {
     res.json({ siteKey: process.env.TURNSTILE_SITE_KEY || '' });
 });
 app.get('/account', (req: Request, res: Response) => {
-    const session = getSession(req);
-    if (!session) return res.redirect('/login?callbackUrl=/account');
-    res.sendFile(path.join(process.cwd(), 'public', 'account.html'));
+    res.redirect('/');
 });
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.on('finish', () => {
