@@ -4,165 +4,202 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KuroNeko | لوحة التحكم</title>
-<link rel="icon" id="favicon" href="/src/danzz.jpg">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   body {
     font-family: 'Tajawal', sans-serif;
-    background:
-      radial-gradient(ellipse at top, #0d2b28 0%, #05100e 45%, #030807 100%);
+    background: radial-gradient(ellipse at top, #0d2b28 0%, #05100e 45%, #030807 100%);
     background-attachment: fixed;
     color: #E7ECF0;
     min-height: 100vh;
   }
   .mono { font-family: 'JetBrains Mono', monospace; }
-  .card {
-    background: rgba(10, 22, 20, 0.7);
-    border: 1px solid rgba(45, 212, 191, 0.15);
-    backdrop-filter: blur(6px);
-  }
-  .card:hover { border-color: rgba(45, 212, 191, 0.4); }
+  .card { background: rgba(10, 22, 20, 0.7); border: 1px solid rgba(45, 212, 191, 0.15); }
+  .drawer { transition: transform 0.25s ease; }
+  .drawer.closed { transform: translateX(100%); }
+  .overlay { transition: opacity 0.25s ease; }
   .gradient-text {
     background: linear-gradient(90deg, #5EEAD4, #2DD4BF);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .avatar-ring {
-    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15), 0 0 40px rgba(45, 212, 191, 0.15);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
 </style>
 </head>
 <body>
-  <div class="max-w-3xl mx-auto px-5 py-12 flex flex-col items-center text-center">
 
-    <img id="avatarImg" src="/images/banner.jpg" class="w-24 h-24 rounded-full object-cover avatar-ring mb-5" alt="KuroNeko">
+  <!-- Top bar -->
+  <header class="flex items-center justify-between px-4 py-3 border-b border-teal-400/10 sticky top-0 bg-[#05100e]/90 backdrop-blur z-30">
+    <button id="menuBtn" class="text-teal-400 text-lg"><i class="fa-solid fa-bars"></i></button>
+    <span id="brandName" class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+    <span class="w-5"></span>
+  </header>
 
-    <h1 id="dash-title" class="text-3xl font-black gradient-text mb-2">واجهة برمجة تطبيقات KuroNeko</h1>
-    <p id="dash-desc" class="text-sm text-gray-400 max-w-md leading-relaxed mb-6"></p>
+  <!-- Drawer -->
+  <div id="overlay" class="overlay fixed inset-0 bg-black/60 z-40 hidden"></div>
+  <aside id="drawer" class="drawer closed fixed top-0 right-0 h-full w-64 bg-[#0a1614] border-l border-teal-400/15 z-50 flex flex-col">
+    <div class="p-5 border-b border-teal-400/10">
+      <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+    </div>
+    <nav class="flex-1 overflow-y-auto p-3 text-sm">
+      <p class="text-[11px] text-gray-500 px-2 mt-2 mb-1">البداية</p>
+      <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-400/10 text-teal-300"><i class="fa-solid fa-house w-4"></i> الرئيسية</a>
+      <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-book w-4 text-teal-400"></i> التوثيق</a>
+      <a href="/stats" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-chart-pie w-4 text-teal-400"></i> الإحصائيات</a>
 
-    <div class="flex flex-col gap-3 mb-10 w-full max-w-xs">
-      <a href="/docs" class="bg-teal-400 text-[#05100e] font-bold px-5 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-teal-300 transition">
+      <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الفئات</p>
+      <div id="categoryLinks"></div>
+
+      <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الحساب</p>
+      <a id="btnSource" href="#" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-brands fa-github w-4 text-teal-400"></i> GitHub</a>
+      <button id="logoutBtn" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-500/10 text-red-400"><i class="fa-solid fa-right-from-bracket w-4"></i> تسجيل الخروج</button>
+    </nav>
+  </aside>
+
+  <main class="max-w-2xl mx-auto px-5 py-6">
+    <div id="loading" class="text-center text-sm text-gray-500 py-20">جاري التحميل...</div>
+
+    <div id="content" class="hidden">
+      <h1 id="dash-title" class="text-2xl font-black gradient-text mb-1">واجهة برمجة تطبيقات KuroNeko</h1>
+      <p id="dash-desc" class="text-xs text-gray-400 leading-relaxed mb-4"></p>
+
+      <img src="/images/banner.jpg" class="w-full h-40 object-cover rounded-2xl mb-4">
+
+      <div class="card border-teal-400/25 rounded-xl p-4 mb-6 flex items-start gap-3">
+        <i class="fa-solid fa-bullhorn text-teal-400 mt-0.5"></i>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          أهلاً بك في KuroNeko! المنصة تعمل بكامل طاقتها الآن، مع بوابة حماية من البوتات، ومصادقة حقيقية عبر مفتاح API خاص بكل حساب.
+        </p>
+      </div>
+
+      <h2 class="text-sm font-bold text-gray-400 mb-3">معلومات مفيدة</h2>
+
+      <!-- Account card -->
+      <div class="card rounded-xl p-4 mb-3">
+        <div class="text-sm font-bold mb-3">حسابي</div>
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-400">مفتاح API الخاص بي</span>
+          <div class="flex gap-2">
+            <button id="revealBtn" class="text-xs bg-teal-400/10 text-teal-300 px-2.5 py-1 rounded-lg">إظهار</button>
+            <button id="copyBtn" class="text-xs bg-gray-500/10 text-gray-300 px-2.5 py-1 rounded-lg">نسخ</button>
+          </div>
+        </div>
+        <div id="apiKeyBox" class="mono text-sm text-teal-300 truncate mb-3">••••••••••••••••••••••••••••••••</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <div class="text-xs text-gray-400 mb-1">الدور</div>
+            <div class="text-sm font-bold" id="userRole">-</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-400 mb-1">تاريخ الانضمام</div>
+            <div class="text-sm font-bold" id="userJoined">-</div>
+          </div>
+        </div>
+        <button id="regenBtn" class="text-[11px] text-red-400 mt-3 hover:underline">تجديد المفتاح (يلغي القديم فوراً)</button>
+      </div>
+
+      <!-- Platform card -->
+      <div class="card rounded-xl p-4 mb-6">
+        <div class="text-sm font-bold mb-3">المنصة</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <div class="text-xs text-gray-400 mb-1">إجمالي المستخدمين</div>
+            <div class="text-lg font-black mono" id="totalUsers">-</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-400 mb-1">الوحدات المتاحة</div>
+            <div class="text-lg font-black mono" id="totalModules">-</div>
+          </div>
+        </div>
+      </div>
+
+      <a href="/docs" class="w-full block text-center bg-teal-400 text-[#05100e] font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-teal-300 transition mb-3">
         <i class="fa-solid fa-book"></i> عرض الوثائق
       </a>
-      <a id="btnSource" href="#" target="_blank" class="card px-5 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 hover:border-teal-400/40 transition">
-        <i class="fa-brands fa-github"></i> GitHub
-      </a>
-    </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-3 gap-3 w-full mb-10">
-      <div class="card rounded-xl py-4">
-        <div class="flex items-center justify-center gap-1.5 text-teal-400 text-xs mb-1"><i class="fa-solid fa-plug"></i> نقاط النهاية</div>
-        <div id="statEndpoints" class="text-xl font-black mono">-</div>
-      </div>
-      <div class="card rounded-xl py-4">
-        <div class="flex items-center justify-center gap-1.5 text-teal-400 text-xs mb-1"><i class="fa-solid fa-bolt"></i> وقت التشغيل</div>
-        <div class="text-xl font-black mono">99.9%</div>
-      </div>
-      <div class="card rounded-xl py-4">
-        <div class="flex items-center justify-center gap-1.5 text-teal-400 text-xs mb-1"><i class="fa-solid fa-clock"></i> الاستجابة</div>
-        <div class="text-xl font-black mono">&lt;120ms</div>
-      </div>
+      <p class="text-center text-[11px] text-gray-600 mt-6">POWERED BY <span class="text-teal-400/80 font-bold">HEMA</span> &bull; 2026</p>
     </div>
-
-    <!-- Quick start -->
-    <div class="w-full text-right mb-3">
-      <h2 class="text-sm font-bold text-gray-400 flex items-center gap-2 justify-end">ابدأ الآن <i class="fa-solid fa-rocket text-teal-400"></i></h2>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mb-10">
-      <a href="/register" class="card rounded-xl p-4 text-right hover:border-teal-400/40 transition">
-        <i class="fa-solid fa-user-plus text-teal-400 mb-2"></i>
-        <div class="text-sm font-bold mb-1">أنشئ حسابك</div>
-        <div class="text-xs text-gray-500">سجّل بالبريد أو ادخل مباشرة</div>
-      </a>
-      <a href="/login" class="card rounded-xl p-4 text-right hover:border-teal-400/40 transition">
-        <i class="fa-solid fa-right-to-bracket text-teal-400 mb-2"></i>
-        <div class="text-sm font-bold mb-1">تسجيل الدخول</div>
-        <div class="text-xs text-gray-500">ادخل لحسابك الحالي</div>
-      </a>
-      <a href="/docs" class="card rounded-xl p-4 text-right hover:border-teal-400/40 transition">
-        <i class="fa-solid fa-code text-teal-400 mb-2"></i>
-        <div class="text-sm font-bold mb-1">قدّم طلبك الأول</div>
-        <div class="text-xs text-gray-500">جرّب أي endpoint مباشرة</div>
-      </a>
-    </div>
-
-    <!-- Modules -->
-    <div class="w-full text-right mb-3">
-      <h2 class="text-sm font-bold text-gray-400 flex items-center gap-2 justify-end">الوحدات المتاحة <i class="fa-solid fa-layer-group text-teal-400"></i></h2>
-    </div>
-    <div id="modulesGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mb-10 text-right"></div>
-
-    <div class="flex gap-4 text-gray-500 text-lg mb-8">
-      <a id="btnStats" href="/stats" class="hover:text-teal-400 transition"><i class="fa-solid fa-chart-pie"></i></a>
-      <a id="btnAccount" href="/account" class="hover:text-teal-400 transition"><i class="fa-solid fa-user"></i></a>
-      <a id="btnChannel" href="#" class="hover:text-teal-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
-    </div>
-
-    <p class="text-xs text-gray-600">POWERED BY <span class="text-teal-400/80 font-bold">HEMA</span> &bull; 2026</p>
-  </div>
+  </main>
 
   <script>
-    const moduleIcons = {
-      auth: 'fa-shield-halved',
-      ai: 'fa-robot',
-      maker: 'fa-wand-magic-sparkles',
-      random: 'fa-shuffle',
-      tools: 'fa-toolbox',
-      download: 'fa-download',
-      search: 'fa-magnifying-glass',
-    };
-    const moduleLabels = {
-      auth: 'الحسابات والمصادقة',
-      ai: 'الذكاء الاصطناعي',
-      maker: 'أدوات الصنع',
-      random: 'عشوائي',
-      tools: 'أدوات عامة',
-      download: 'تحميل الوسائط',
-      search: 'البحث',
-    };
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    function openDrawer() { drawer.classList.remove('closed'); overlay.classList.remove('hidden'); }
+    function closeDrawer() { drawer.classList.add('closed'); overlay.classList.add('hidden'); }
+    menuBtn.addEventListener('click', openDrawer);
+    overlay.addEventListener('click', closeDrawer);
 
-    fetch('/config')
-      .then(res => res.json())
-      .then(config => {
-        document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات ' + config.settings.apiName;
-        document.getElementById('dash-desc').innerText = config.settings.description;
+    let fullApiKey = '';
+    let revealed = false;
 
-        const btnChannel = document.getElementById('btnChannel');
-        if (config.settings.channelUrl) btnChannel.href = config.settings.channelUrl;
-        else btnChannel.style.display = 'none';
+    fetch('/api/auth/me').then(r => r.json()).then(data => {
+      document.getElementById('loading').classList.add('hidden');
+      if (!data.status) { location.href = '/login?callbackUrl=/'; return; }
 
-        const btnSource = document.getElementById('btnSource');
-        if (config.settings.github) btnSource.href = config.settings.github;
-        else btnSource.style.display = 'none';
+      document.getElementById('content').classList.remove('hidden');
+      document.getElementById('userRole').innerText = data.user.role === 'ADMIN' ? 'مسؤول' : 'مستخدم';
+      document.getElementById('userJoined').innerText = new Date(data.user.createdAt).toLocaleDateString('ar-EG');
+      fullApiKey = data.user.apiKey;
+    });
 
-        if (config.settings.favicon) document.getElementById('favicon').href = config.settings.favicon;
+    fetch('/api/stats/platform').then(r => r.json()).then(d => {
+      if (d.status) document.getElementById('totalUsers').innerText = d.totalUsers;
+    });
 
-        const tags = config.tags || {};
-        let totalEndpoints = 0;
-        const grid = document.getElementById('modulesGrid');
-        grid.innerHTML = '';
-        Object.keys(tags).forEach(key => {
-          const items = tags[key] || [];
-          totalEndpoints += items.length;
-          const icon = moduleIcons[key] || 'fa-cube';
-          const label = moduleLabels[key] || key;
-          grid.innerHTML += `
-            <div class="card rounded-xl p-4">
-              <i class="fa-solid ${icon} text-teal-400 mb-2"></i>
-              <div class="text-sm font-bold mb-1">${label}</div>
-              <div class="text-xs text-gray-500">${items.length} نقطة وصول</div>
-            </div>`;
-        });
-        document.getElementById('statEndpoints').innerText = totalEndpoints + '+';
-      })
-      .catch(() => {
-        document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات KuroNeko';
-        document.getElementById('dash-desc').innerText = 'لوحة تحكم بسيطة لواجهة API';
+    fetch('/config').then(r => r.json()).then(config => {
+      document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات ' + config.settings.apiName;
+      document.getElementById('dash-desc').innerText = config.settings.description;
+
+      const btnSource = document.getElementById('btnSource');
+      if (config.settings.github) btnSource.href = config.settings.github;
+      else btnSource.style.display = 'none';
+
+      const tags = config.tags || {};
+      const keys = Object.keys(tags);
+      document.getElementById('totalModules').innerText = keys.length;
+
+      const icons = { auth: 'fa-shield-halved', ai: 'fa-robot', maker: 'fa-wand-magic-sparkles', random: 'fa-shuffle', tools: 'fa-toolbox', download: 'fa-download', search: 'fa-magnifying-glass' };
+      const labels = { auth: 'الحسابات', ai: 'الذكاء الاصطناعي', maker: 'أدوات الصنع', random: 'عشوائي', tools: 'أدوات عامة', download: 'تحميل', search: 'بحث' };
+      const container = document.getElementById('categoryLinks');
+      keys.filter(k => k !== 'auth').forEach(k => {
+        container.innerHTML += `<a href="/docs#${k}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid ${icons[k] || 'fa-cube'} w-4 text-teal-400"></i> ${labels[k] || k}</a>`;
       });
+    }).catch(() => {
+      document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات KuroNeko';
+      document.getElementById('dash-desc').innerText = 'لوحة تحكم بسيطة لواجهة API';
+    });
+
+    document.getElementById('revealBtn').addEventListener('click', () => {
+      revealed = !revealed;
+      document.getElementById('apiKeyBox').innerText = revealed ? fullApiKey : '••••••••••••••••••••••••••••••••';
+      document.getElementById('revealBtn').innerText = revealed ? 'إخفاء' : 'إظهار';
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(fullApiKey);
+      const btn = document.getElementById('copyBtn');
+      const old = btn.innerText;
+      btn.innerText = 'تم النسخ ✓';
+      setTimeout(() => { btn.innerText = old; }, 1500);
+    });
+
+    document.getElementById('regenBtn').addEventListener('click', async () => {
+      if (!confirm('سيتوقف مفتاحك الحالي عن العمل فوراً. متأكد؟')) return;
+      const res = await fetch('/api/auth/regenerate-key', { method: 'POST' });
+      const data = await res.json();
+      if (data.status) {
+        fullApiKey = data.apiKey;
+        revealed = true;
+        document.getElementById('apiKeyBox').innerText = fullApiKey;
+        document.getElementById('revealBtn').innerText = 'إخفاء';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      location.href = '/login';
+    });
   </script>
 </body>
 </html>
