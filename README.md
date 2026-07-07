@@ -20,6 +20,16 @@ x-api-key: kn_xxxxxxxx
 ```
 مسارات `auth` (تسجيل/دخول) و`ai` (يعتمد على تسجيل الدخول بالجلسة) مستثناة من هذا الشرط.
 
+### Spotify (بحث وتحميل منفصلين)
+يستخدم **Spotify Web API الرسمي** فقط — يرجع اسم الأغنية، الفنان، الغلاف، ورابط **معاينة رسمية 30 ثانية** (لو متوفرة). لا يوجد ولن يُضاف تحميل للملف الكامل، لأن ذلك يتطلب تجاوز حماية Spotify وينتهك حقوق النشر.
+
+احصل على `SPOTIFY_CLIENT_ID` و`SPOTIFY_CLIENT_SECRET` مجاناً من [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard)، وضعهما بالـ `.env`.
+
+```
+GET /api/search/spotify?q=Blinding Lights&apikey=kn_xxxxxxxx
+GET /api/download/spotify?url=https://open.spotify.com/track/xxxxx&apikey=kn_xxxxxxxx
+```
+
 ## الإعداد السريع
 
 ```bash
