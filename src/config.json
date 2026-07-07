@@ -155,6 +155,15 @@
         "params": [
           { "name": "url", "required": true, "description": "رابط تيك توك" }
         ]
+      },
+      {
+        "name": "تحميل معلومات Spotify (رسمي)",
+        "endpoint": "/api/download/spotify",
+        "filename": "spotify",
+        "method": "GET",
+        "params": [
+          { "name": "url", "required": true, "description": "رابط تراك Spotify" }
+        ]
       }
     ],
     "search": [
@@ -183,6 +192,15 @@
         "method": "GET",
         "params": [
           { "name": "q", "required": true, "description": "الكلمة المفتاحية" }
+        ]
+      },
+      {
+        "name": "بحث Spotify (رسمي)",
+        "endpoint": "/api/search/spotify",
+        "filename": "spotify",
+        "method": "GET",
+        "params": [
+          { "name": "q", "required": true, "description": "اسم الأغنية أو الفنان" }
         ]
       }
     ]
