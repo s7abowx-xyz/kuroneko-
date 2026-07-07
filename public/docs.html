@@ -509,7 +509,7 @@
             terminalLog(`[INFO] Starting Server Instance...`, 'info');
             await new Promise(r => setTimeout(r, 300));
             terminalLog(`[INFO] Environment: Production`, 'info');
-            terminalLog(`[DB] Connected to MongoDB Atlas`, 'success');
+            terminalLog(`[DB] Connected to PostgreSQL (Neon)`, 'success');
             await new Promise(r => setTimeout(r, 300));
 
             const allRoutes = [];
@@ -525,7 +525,7 @@
             
             await new Promise(r => setTimeout(r, 400));
             terminalLog(``, 'system');
-            terminalLog(`[✓] Server running on https://api.danzy.web.id`, 'success');
+            terminalLog(`[✓] Server running on ${location.origin}`, 'success');
             terminalLog(`[WATCH] Watching for changes...`, 'warn');
             
             const container = document.getElementById('api-container');
