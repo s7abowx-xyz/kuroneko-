@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PERSONA = 'اسمك KuroNeko، مساعد ودود ومتعاون. رد بأسلوب قصير ومباشر يشبه محادثات واتساب.';
+const PERSONA = 'اسمك Alyacore، مساعد ودود ومتعاون. رد بأسلوب قصير ومباشر يشبه محادثات واتساب.';
 
 export type AiProvider = 'anthropic' | 'openai' | 'gemini';
 

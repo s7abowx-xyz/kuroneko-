@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from './prisma';
 
 export function generateApiKey() {
-  return `kn_${nanoid(32)}`;
+  return `api-${nanoid(32)}`;
 }
 
 // Middleware: requires a valid API key on ?apikey= or the x-api-key header.

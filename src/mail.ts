@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = process.env.EMAIL_FROM || 'KuroNeko <noreply@example.com>';
+const FROM = process.env.EMAIL_FROM || 'Alyacore <noreply@example.com>';
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 export async function sendPasswordResetEmail(email: string, token: string) {
@@ -9,7 +9,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   return resend.emails.send({
     from: FROM,
     to: email,
-    subject: 'إعادة تعيين كلمة المرور - KuroNeko',
+    subject: 'إعادة تعيين كلمة المرور - Alyacore',
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: auto;">
         <h2>إعادة تعيين كلمة المرور</h2>

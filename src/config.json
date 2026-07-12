@@ -1,7 +1,7 @@
 {
   "settings": {
     "creator": "Hema",
-    "apiName": "KuroNeko",
+    "apiName": "Alyacore",
     "description": "خدمة API مجانية وموثوقة مصممة لتطوير التطبيقات الحديثة. مبنية باستخدام Node.js و TypeScript، بأداء سريع، ونقاط وصول مستقرة، وتكامل سهل.",
     "apiVersion": "v1.0",
     "visitors": "0",
@@ -76,9 +76,9 @@
     ],
     "ai": [
       {
-        "name": "محادثة KuroNeko",
-        "endpoint": "/api/ai/kuroneko",
-        "filename": "kuroneko",
+        "name": "محادثة Alyacore",
+        "endpoint": "/api/ai/alyacore",
+        "filename": "alyacore",
         "method": "GET",
         "params": [
           { "name": "q", "required": true, "description": "السؤال" },
