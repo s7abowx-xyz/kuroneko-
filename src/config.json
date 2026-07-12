@@ -8,7 +8,7 @@
     "favicon": "/src/danzz.jpg",
     "thumbnail": "/src/thumbnail.jpg",
     "channelUrl": "https://whatsapp.com/channel/0029VbBQG1n3QxRsqN7XkS06",
-    "github": "https://github.com"
+    "github": "https://github.com/DanzzAraAra"
   },
   "tags": {
     "auth": [
@@ -202,6 +202,64 @@
         "params": [
           { "name": "q", "required": true, "description": "اسم الأغنية أو الفنان" }
         ]
+      }
+    ],
+    "store": [
+      {
+        "name": "بدء الاشتراك (Stripe Checkout)",
+        "endpoint": "/api/store/checkout",
+        "filename": "checkout",
+        "method": "POST",
+        "params": []
+      },
+      {
+        "name": "إدارة الاشتراك (Billing Portal)",
+        "endpoint": "/api/store/portal",
+        "filename": "portal",
+        "method": "POST",
+        "params": []
+      }
+    ],
+    "tickets": [
+      {
+        "name": "فتح تذكرة جديدة",
+        "endpoint": "/api/tickets",
+        "filename": "create",
+        "method": "POST",
+        "params": [
+          { "name": "subject", "required": true, "description": "عنوان التذكرة" },
+          { "name": "message", "required": true, "description": "نص الرسالة" }
+        ]
+      },
+      {
+        "name": "قائمة تذاكري",
+        "endpoint": "/api/tickets",
+        "filename": "list",
+        "method": "GET",
+        "params": []
+      },
+      {
+        "name": "عرض تذكرة",
+        "endpoint": "/api/tickets/:id",
+        "filename": "view",
+        "method": "GET",
+        "params": []
+      },
+      {
+        "name": "الرد على تذكرة",
+        "endpoint": "/api/tickets/:id/reply",
+        "filename": "reply",
+        "method": "POST",
+        "params": [
+          { "name": "message", "required": true, "description": "نص الرد" }
+        ]
+      },
+      {
+        "name": "إغلاق تذكرة",
+        "endpoint": "/api/tickets/:id/close",
+        "filename": "close",
+        "method": "POST",
+        "params": []
       }
     ]
   }
