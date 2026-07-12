@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KuroNeko | Documents</title>
+    <title>Alyacore | Documents</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -234,7 +234,7 @@
                     <i class="fa-solid fa-bars text-sm"></i>
                 </button>
                 <div class="flex flex-col justify-center">
-                    <h1 id="nav-title" class="font-bold text-lg tracking-tight text-slate-800 leading-none">KURONEKO</h1>
+                    <h1 id="nav-title" class="font-bold text-lg tracking-tight text-slate-800 leading-none">ALYACORE</h1>
                     <span class="text-[9px] font-semibold text-fmn-dark tracking-widest mt-1">API PLATFORM</span>
                 </div>
             </div>
@@ -255,16 +255,13 @@
     <div id="docsOverlay" class="fixed inset-0 bg-black/60 z-[70] hidden transition-opacity duration-300"></div>
     <aside id="docsDrawer" class="fixed top-0 right-0 h-full w-64 bg-[#0a1614] border-l border-teal-400/15 z-[80] flex flex-col transform translate-x-full transition-transform duration-300">
         <div class="p-5 border-b border-teal-400/10">
-            <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+            <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> Alyacore</span>
         </div>
         <nav class="flex-1 overflow-y-auto p-3 text-sm">
             <p class="text-[11px] text-gray-500 px-2 mt-2 mb-1">البداية</p>
             <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-house w-4 text-teal-400"></i> الرئيسية</a>
             <a href="/account" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-user w-4 text-teal-400"></i> حساب تعريفي</a>
             <a href="/stats" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-chart-pie w-4 text-teal-400"></i> الإحصائيات</a>
-            <a href="/terms" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-file-lines w-4 text-teal-400"></i> الشروط والأحكام</a>
-            <a href="/store" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-cart-shopping w-4 text-teal-400"></i> محل</a>
-            <a href="/tickets" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10 text-gray-200"><i class="fa-solid fa-ticket w-4 text-teal-400"></i> تذكرة مفتوحة</a>
 
             <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الفئات</p>
             <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-400/10 text-teal-300"><i class="fa-solid fa-book w-4"></i> التوثيق</a>
@@ -292,12 +289,12 @@
         
         <aside class="lg:col-span-4 lg:sticky lg:top-24 flex flex-col gap-6 h-fit z-40 w-full max-w-full animate-slide-in-right">
             
-            <img src="/images/banner.jpg" class="w-full h-40 object-cover rounded-2xl shadow-lg" alt="KuroNeko">
+            <img src="/images/banner.jpg" class="w-full h-40 object-cover rounded-2xl shadow-lg" alt="Alyacore">
 
             <div class="bg-[rgba(10,22,20,0.75)] border border-teal-400/25 rounded-xl p-4 flex items-start gap-3">
                 <i class="fa-solid fa-bullhorn text-teal-400 mt-0.5"></i>
                 <p class="text-xs text-gray-300 leading-relaxed">
-                    أهلاً بك في KuroNeko! المنصة تعمل بكامل طاقتها الآن، مع بوابة حماية من البوتات، ومصادقة حقيقية عبر مفتاح API خاص بكل حساب.
+                    أهلاً بك في Alyacore! المنصة تعمل بكامل طاقتها الآن، مع بوابة حماية من البوتات، ومصادقة حقيقية عبر مفتاح API خاص بكل حساب.
                 </p>
             </div>
 
@@ -405,7 +402,7 @@
                     setUi(globalConfig);
                     loadEnd(globalConfig.tags);
                     startWIBClock();
-                    await kuroneko(globalConfig);
+                    await alyacore(globalConfig);
                     loadReminder();
                     setSearch();
                 } catch (e) {
@@ -536,7 +533,7 @@
             logs.scrollTop = logs.scrollHeight;
         }
 
-        async function kuroneko(config) {
+        async function alyacore(config) {
             const logs = document.getElementById('term-logs');
             if(!logs) return;
             
@@ -556,7 +553,7 @@
 
             await new Promise(r => setTimeout(r, 400));
             const ver = config.settings.apiVersion || '1.0.0';
-            terminalLog(`> kuroneko-api@${ver} dev`, 'system');
+            terminalLog(`> alyacore-api@${ver} dev`, 'system');
             terminalLog(`> ts-node src/index.ts`, 'system');
             await new Promise(r => setTimeout(r, 600));
             terminalLog(``, 'system'); 

@@ -22,7 +22,7 @@
 <body>
   <div class="wrap">
     <div class="box">
-      <div class="brand">KuroNeko 🛡️</div>
+      <div class="brand">Alyacore 🛡️</div>
       <h1>إجراء التحقق من الأمان</h1>
       <p>يستخدم هذا الموقع خدمة أمنية للحماية من برامج الروبوتات الضارة. يتم عرض هذه الصفحة بينما يتحقق الموقع من أنك لست روبوتًا.</p>
       <div class="status" id="status">
@@ -36,7 +36,7 @@
   <script>
     const params = new URLSearchParams(location.search);
     const callbackUrl = params.get('callbackUrl') || '/';
-    document.getElementById('rayId').textContent = 'Ray ID: ' + Math.random().toString(16).slice(2, 10) + ' · محمي بواسطة KuroNeko Security';
+    document.getElementById('rayId').textContent = 'Ray ID: ' + Math.random().toString(16).slice(2, 10) + ' · محمي بواسطة Alyacore Security';
 
     async function sha256Hex(str) {
       const data = new TextEncoder().encode(str);
@@ -62,7 +62,7 @@
         const res = await fetch('/api/security/challenge');
         const { nonce, difficulty, token } = await res.json();
 
-        statusEl.innerHTML = '<span>في انتظار KuroNeko للاستجابة...</span><div class="spinner"></div>';
+        statusEl.innerHTML = '<span>في انتظار Alyacore للاستجابة...</span><div class="spinner"></div>';
         const solution = await solvePow(nonce, difficulty);
 
         const verifyRes = await fetch('/api/security/verify', {

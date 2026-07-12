@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KuroNeko | لوحة التحكم</title>
+<title>Alyacore | لوحة التحكم</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,7 +31,7 @@
   <!-- Top bar -->
   <header class="flex items-center justify-between px-4 py-3 border-b border-teal-400/10 sticky top-0 bg-[#05100e]/90 backdrop-blur z-30">
     <button id="menuBtn" class="text-teal-400 text-lg"><i class="fa-solid fa-bars"></i></button>
-    <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+    <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> Alyacore</span>
     <span class="w-5"></span>
   </header>
 
@@ -39,16 +39,13 @@
   <div id="overlay" class="overlay fixed inset-0 bg-black/60 z-40 hidden"></div>
   <aside id="drawer" class="drawer closed fixed top-0 right-0 h-full w-64 bg-[#0a1614] border-l border-teal-400/15 z-50 flex flex-col">
     <div class="p-5 border-b border-teal-400/10">
-      <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> KuroNeko</span>
+      <span class="font-black text-teal-300 flex items-center gap-2"><i class="fa-solid fa-cat"></i> Alyacore</span>
     </div>
     <nav class="flex-1 overflow-y-auto p-3 text-sm">
       <p class="text-[11px] text-gray-500 px-2 mt-2 mb-1">البداية</p>
       <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-400/10 text-teal-300"><i class="fa-solid fa-house w-4"></i> الرئيسية</a>
       <a href="/account" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-user w-4 text-teal-400"></i> حساب تعريفي</a>
       <a href="/stats" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-chart-pie w-4 text-teal-400"></i> الإحصائيات</a>
-      <a href="/terms" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-file-lines w-4 text-teal-400"></i> الشروط والأحكام</a>
-      <a href="/store" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-cart-shopping w-4 text-teal-400"></i> محل</a>
-      <a href="/tickets" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-ticket w-4 text-teal-400"></i> تذكرة مفتوحة</a>
 
       <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الفئات</p>
       <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-book w-4 text-teal-400"></i> التوثيق</a>
@@ -64,7 +61,7 @@
     <div id="loading" class="text-center text-sm text-gray-500 py-20">جاري التحميل...</div>
 
     <div id="content" class="hidden">
-      <h1 id="dash-title" class="text-2xl font-black gradient-text mb-1">واجهة برمجة تطبيقات KuroNeko</h1>
+      <h1 id="dash-title" class="text-2xl font-black gradient-text mb-1">واجهة برمجة تطبيقات Alyacore</h1>
       <p id="dash-desc" class="text-xs text-gray-400 leading-relaxed mb-4"></p>
 
       <img src="/images/banner.jpg" class="w-full h-40 object-cover rounded-2xl mb-4">
@@ -72,7 +69,7 @@
       <div class="card border-teal-400/25 rounded-xl p-4 mb-6 flex items-start gap-3">
         <i class="fa-solid fa-bullhorn text-teal-400 mt-0.5"></i>
         <p class="text-xs text-gray-300 leading-relaxed">
-          أهلاً بك في KuroNeko! المنصة تعمل بكامل طاقتها الآن، مع بوابة حماية من البوتات، ومصادقة حقيقية عبر مفتاح API خاص بكل حساب.
+          أهلاً بك في Alyacore! المنصة تعمل بكامل طاقتها الآن، مع بوابة حماية من البوتات، ومصادقة حقيقية عبر مفتاح API خاص بكل حساب.
         </p>
       </div>
 
@@ -170,7 +167,7 @@
         container.innerHTML += `<a href="/docs#${k}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid ${icons[k] || 'fa-cube'} w-4 text-teal-400"></i> ${labels[k] || k}</a>`;
       });
     }).catch(() => {
-      document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات KuroNeko';
+      document.getElementById('dash-title').innerText = 'واجهة برمجة تطبيقات Alyacore';
       document.getElementById('dash-desc').innerText = 'لوحة تحكم بسيطة لواجهة API';
     });
 
