@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدعم الفني | KuroNeko</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body { font-family:'Tajawal',sans-serif; background:radial-gradient(ellipse at top,#0d2b28 0%,#05100e 45%,#030807 100%); background-attachment:fixed; color:#E7ECF0; min-height:100vh; }
+  .card { background: rgba(10,22,20,0.75); border:1px solid rgba(45,212,191,0.15); }
+  .field { background: rgba(5,16,14,0.6); border:1px solid rgba(45,212,191,0.2); }
+</style>
+</head>
+<body class="px-5 py-8">
+  <div class="max-w-md mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+      <a href="/" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-teal-300"><i class="fa-solid fa-arrow-right"></i></a>
+      <h1 class="text-xl font-black text-teal-300">الدعم الفني</h1>
+    </div>
+
+    <button id="newTicketBtn" class="w-full bg-teal-400 text-[#05100e] font-bold rounded-xl py-2.5 text-sm mb-4 hover:bg-teal-300 transition">
+      <i class="fa-solid fa-plus"></i> فتح تذكرة جديدة
+    </button>
+
+    <form id="newTicketForm" class="hidden card rounded-xl p-4 mb-4 flex flex-col gap-3">
+      <input id="subjectInput" required placeholder="عنوان التذكرة" class="field rounded-lg px-3.5 py-2.5 text-sm">
+      <textarea id="messageInput" required placeholder="اشرح مشكلتك بالتفصيل..." rows="4" class="field rounded-lg px-3.5 py-2.5 text-sm"></textarea>
+      <button type="submit" class="bg-teal-400 text-[#05100e] font-bold rounded-xl py-2.5 text-sm">إرسال</button>
+    </form>
+
+    <div id="loading" class="text-center text-sm text-gray-500 py-10">جاري التحميل...</div>
+    <div id="ticketsList" class="flex flex-col gap-2"></div>
+    <p id="emptyMsg" class="hidden text-center text-xs text-gray-500 py-10">مافيش تذاكر لسا.</p>
+  </div>
+
+  <script>
+    async function loadTickets() {
+      const res = await fetch('/api/tickets');
+      const data = await res.json();
+      document.getElementById('loading').classList.add('hidden');
+      if (!data.status) { location.href = '/login?callbackUrl=/tickets'; return; }
+
+      const list = document.getElementById('ticketsList');
+      list.innerHTML = '';
+      if (data.tickets.length === 0) {
+        document.getElementById('emptyMsg').classList.remove('hidden');
+        return;
+      }
+      data.tickets.forEach(t => {
+        const statusColor = t.status === 'OPEN' ? 'text-teal-300 bg-teal-400/10' : 'text-gray-400 bg-gray-500/10';
+        list.innerHTML += `
+          <a href="/tickets/${t.id}" class="card rounded-xl p-4 flex items-center justify-between hover:border-teal-400/40 transition">
+            <div>
+              <div class="text-sm font-bold">${t.subject}</div>
+              <div class="text-xs text-gray-500 mt-1">${t._count.messages} رسالة</div>
+            </div>
+            <span class="text-[10px] px-2 py-1 rounded-full ${statusColor}">${t.status === 'OPEN' ? 'مفتوحة' : 'مغلقة'}</span>
+          </a>`;
+      });
+    }
+    loadTickets();
+
+    document.getElementById('newTicketBtn').addEventListener('click', () => {
+      document.getElementById('newTicketForm').classList.toggle('hidden');
+    });
+
+    document.getElementById('newTicketForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const res = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: document.getElementById('subjectInput').value,
+          message: document.getElementById('messageInput').value,
+        }),
+      });
+      const data = await res.json();
+      if (data.status) location.href = `/tickets/${data.ticket.id}`;
+    });
+  </script>
+</body>
+</html>

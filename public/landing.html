@@ -44,10 +44,14 @@
     <nav class="flex-1 overflow-y-auto p-3 text-sm">
       <p class="text-[11px] text-gray-500 px-2 mt-2 mb-1">البداية</p>
       <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-400/10 text-teal-300"><i class="fa-solid fa-house w-4"></i> الرئيسية</a>
-      <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-book w-4 text-teal-400"></i> التوثيق</a>
+      <a href="/account" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-user w-4 text-teal-400"></i> حساب تعريفي</a>
       <a href="/stats" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-chart-pie w-4 text-teal-400"></i> الإحصائيات</a>
+      <a href="/terms" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-file-lines w-4 text-teal-400"></i> الشروط والأحكام</a>
+      <a href="/store" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-cart-shopping w-4 text-teal-400"></i> محل</a>
+      <a href="/tickets" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-ticket w-4 text-teal-400"></i> تذكرة مفتوحة</a>
 
       <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الفئات</p>
+      <a href="/docs" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid fa-book w-4 text-teal-400"></i> التوثيق</a>
       <div id="categoryLinks"></div>
 
       <p class="text-[11px] text-gray-500 px-2 mt-4 mb-1">الحساب</p>
@@ -162,7 +166,7 @@
       const icons = { auth: 'fa-shield-halved', ai: 'fa-robot', maker: 'fa-wand-magic-sparkles', random: 'fa-shuffle', tools: 'fa-toolbox', download: 'fa-download', search: 'fa-magnifying-glass' };
       const labels = { auth: 'الحسابات', ai: 'الذكاء الاصطناعي', maker: 'أدوات الصنع', random: 'عشوائي', tools: 'أدوات عامة', download: 'تحميل', search: 'بحث' };
       const container = document.getElementById('categoryLinks');
-      keys.filter(k => k !== 'auth').forEach(k => {
+      keys.filter(k => !['auth','store','tickets'].includes(k)).forEach(k => {
         container.innerHTML += `<a href="/docs#${k}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-teal-400/10"><i class="fa-solid ${icons[k] || 'fa-cube'} w-4 text-teal-400"></i> ${labels[k] || k}</a>`;
       });
     }).catch(() => {

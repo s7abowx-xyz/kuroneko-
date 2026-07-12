@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التذكرة | KuroNeko</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body { font-family:'Tajawal',sans-serif; background:radial-gradient(ellipse at top,#0d2b28 0%,#05100e 45%,#030807 100%); background-attachment:fixed; color:#E7ECF0; min-height:100vh; }
+  .card { background: rgba(10,22,20,0.75); border:1px solid rgba(45,212,191,0.15); }
+  .field { background: rgba(5,16,14,0.6); border:1px solid rgba(45,212,191,0.2); }
+  .msg-user { background: rgba(45,212,191,0.12); margin-right: auto; }
+  .msg-admin { background: rgba(255,255,255,0.06); margin-left: auto; }
+</style>
+</head>
+<body class="px-5 py-8">
+  <div class="max-w-md mx-auto">
+    <div class="flex items-center gap-3 mb-4">
+      <a href="/tickets" class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-teal-300"><i class="fa-solid fa-arrow-right"></i></a>
+      <h1 id="subjectTitle" class="text-lg font-black text-teal-300 truncate">...</h1>
+    </div>
+
+    <div id="loading" class="text-center text-sm text-gray-500 py-10">جاري التحميل...</div>
+
+    <div id="content" class="hidden">
+      <div id="statusBadge" class="text-center text-xs mb-4"></div>
+      <div id="messages" class="flex flex-col gap-2 mb-4"></div>
+
+      <form id="replyForm" class="flex flex-col gap-3">
+        <textarea id="replyInput" required placeholder="اكتب ردك..." rows="3" class="field rounded-lg px-3.5 py-2.5 text-sm"></textarea>
+        <div class="flex gap-2">
+          <button type="submit" class="flex-1 bg-teal-400 text-[#05100e] font-bold rounded-xl py-2.5 text-sm">إرسال الرد</button>
+          <button type="button" id="closeBtn" class="card rounded-xl px-4 text-sm text-red-400">إغلاق</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const ticketId = location.pathname.split('/').pop();
+
+    async function load() {
+      const res = await fetch(`/api/tickets/${ticketId}`);
+      const data = await res.json();
+      document.getElementById('loading').classList.add('hidden');
+      if (!data.status) { document.body.innerHTML = '<p class="text-center text-sm text-red-400 py-10">' + (data.message || 'تعذر تحميل التذكرة.') + '</p>'; return; }
+
+      document.getElementById('content').classList.remove('hidden');
+      document.getElementById('subjectTitle').innerText = data.ticket.subject;
+
+      const badge = document.getElementById('statusBadge');
+      const isOpen = data.ticket.status === 'OPEN';
+      badge.innerHTML = `<span class="px-3 py-1 rounded-full ${isOpen ? 'bg-teal-400/10 text-teal-300' : 'bg-gray-500/10 text-gray-400'}">${isOpen ? 'مفتوحة' : 'مغلقة'}</span>`;
+
+      const messages = document.getElementById('messages');
+      messages.innerHTML = '';
+      data.ticket.messages.forEach(m => {
+        messages.innerHTML += `
+          <div class="max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm ${m.isAdmin ? 'msg-admin' : 'msg-user'}">
+            <div class="text-[10px] text-gray-400 mb-1">${m.isAdmin ? 'الدعم الفني' : m.sender.name}</div>
+            ${m.body}
+          </div>`;
+      });
+
+      if (!isOpen) {
+        document.getElementById('replyForm').classList.add('hidden');
+      }
+    }
+    load();
+
+    document.getElementById('replyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = document.getElementById('replyInput').value;
+      const res = await fetch(`/api/tickets/${ticketId}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      const data = await res.json();
+      if (data.status) {
+        document.getElementById('replyInput').value = '';
+        load();
+      }
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', async () => {
+      if (!confirm('متأكد تبي تقفل التذكرة؟')) return;
+      await fetch(`/api/tickets/${ticketId}/close`, { method: 'POST' });
+      load();
+    });
+  </script>
+</body>
+</html>
