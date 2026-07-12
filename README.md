@@ -12,11 +12,11 @@
 ### استخدام مفتاح API
 كل نقاط الوصول تحت تصنيفات `maker`, `random`, `tools`, `download`, `search` تتطلب مفتاح API صالح:
 ```
-GET /api/tools/ssweb?url=https://example.com&apikey=kn_xxxxxxxx
+GET /api/tools/ssweb?url=https://example.com&apikey=api-xxxxxxxx
 ```
 أو عبر الهيدر:
 ```
-x-api-key: kn_xxxxxxxx
+x-api-key: api-xxxxxxxx
 ```
 مسارات `auth` (تسجيل/دخول) و`ai` (يعتمد على تسجيل الدخول بالجلسة) مستثناة من هذا الشرط.
 
@@ -73,8 +73,8 @@ ALTER TABLE "ticket_messages" ADD CONSTRAINT "ticket_messages_senderId_fkey" FOR
 احصل على `SPOTIFY_CLIENT_ID` و`SPOTIFY_CLIENT_SECRET` مجاناً من [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard)، وضعهما بالـ `.env`.
 
 ```
-GET /api/search/spotify?q=Blinding Lights&apikey=kn_xxxxxxxx
-GET /api/download/spotify?url=https://open.spotify.com/track/xxxxx&apikey=kn_xxxxxxxx
+GET /api/search/spotify?q=Blinding Lights&apikey=api-xxxxxxxx
+GET /api/download/spotify?url=https://open.spotify.com/track/xxxxx&apikey=api-xxxxxxxx
 ```
 
 ## الإعداد السريع
