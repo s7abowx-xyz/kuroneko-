@@ -69,6 +69,14 @@ const formatUptime = (seconds: number) => {
 };
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
+
+// Stripe webhook needs the raw body for signature verification, so it's
+// registered BEFORE the global express.json() parser below.
+app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
+    const { handleStripeWebhook } = await import('./src/stripe-webhook');
+    return handleStripeWebhook(req, res);
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -207,6 +215,24 @@ app.get('/docs', (req: Request, res: Response) => {
     const session = getSession(req);
     if (!session) return res.redirect('/login?callbackUrl=/docs');
     res.sendFile(path.join(process.cwd(), 'public', 'docs.html'));
+});
+app.get('/terms', (req: Request, res: Response) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'terms.html'));
+});
+app.get('/store', (req: Request, res: Response) => {
+    const session = getSession(req);
+    if (!session) return res.redirect('/login?callbackUrl=/store');
+    res.sendFile(path.join(process.cwd(), 'public', 'store.html'));
+});
+app.get('/tickets', (req: Request, res: Response) => {
+    const session = getSession(req);
+    if (!session) return res.redirect('/login?callbackUrl=/tickets');
+    res.sendFile(path.join(process.cwd(), 'public', 'tickets.html'));
+});
+app.get('/tickets/:id', (req: Request, res: Response) => {
+    const session = getSession(req);
+    if (!session) return res.redirect(`/login?callbackUrl=/tickets/${req.params.id}`);
+    res.sendFile(path.join(process.cwd(), 'public', 'ticket-view.html'));
 });
 app.use((req: Request, res: Response) => {
     if (req.accepts('html')) {

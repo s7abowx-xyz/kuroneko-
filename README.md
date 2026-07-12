@@ -20,6 +20,53 @@ x-api-key: kn_xxxxxxxx
 ```
 مسارات `auth` (تسجيل/دخول) و`ai` (يعتمد على تسجيل الدخول بالجلسة) مستثناة من هذا الشرط.
 
+### تحديث قاعدة بيانات موجودة مسبقاً
+لو عندك مستخدمين مسجّلين بالفعل وتبي تضيف ميزتي المتجر والدعم الفني، شغّل هذي الأوامر **كل واحد لحاله** بمحرر SQL بتاع Neon:
+
+```sql
+CREATE TYPE "Plan" AS ENUM ('FREE', 'PRO');
+```
+```sql
+CREATE TYPE "TicketStatus" AS ENUM ('OPEN', 'CLOSED');
+```
+```sql
+ALTER TABLE "users" ADD COLUMN "plan" "Plan" NOT NULL DEFAULT 'FREE';
+```
+```sql
+ALTER TABLE "users" ADD COLUMN "stripeCustomerId" TEXT;
+```
+```sql
+CREATE UNIQUE INDEX "users_stripeCustomerId_key" ON "users"("stripeCustomerId");
+```
+```sql
+CREATE TABLE "tickets" ("id" TEXT NOT NULL, "userId" TEXT NOT NULL, "subject" TEXT NOT NULL, "status" "TicketStatus" NOT NULL DEFAULT 'OPEN', "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "tickets_pkey" PRIMARY KEY ("id"));
+```
+```sql
+CREATE TABLE "ticket_messages" ("id" TEXT NOT NULL, "ticketId" TEXT NOT NULL, "senderId" TEXT NOT NULL, "body" TEXT NOT NULL, "isAdmin" BOOLEAN NOT NULL DEFAULT false, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "ticket_messages_pkey" PRIMARY KEY ("id"));
+```
+```sql
+ALTER TABLE "tickets" ADD CONSTRAINT "tickets_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE;
+```
+```sql
+ALTER TABLE "ticket_messages" ADD CONSTRAINT "ticket_messages_ticketId_fkey" FOREIGN KEY ("ticketId") REFERENCES "tickets"("id") ON DELETE CASCADE;
+```
+```sql
+ALTER TABLE "ticket_messages" ADD CONSTRAINT "ticket_messages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "users"("id") ON DELETE CASCADE;
+```
+
+### المتجر والاشتراكات (`/store`)
+اشتراك حقيقي عبر **Stripe** (شهري، PRO). يحتاج:
+1. حساب Stripe → أنشئ **Product** بسعر شهري متكرر → انسخ الـ Price ID
+2. من Developers → API Keys → انسخ الـ Secret Key
+3. من Developers → Webhooks → أضف endpoint: `{APP_URL}/api/webhooks/stripe`، استمع لـ `checkout.session.completed` و`customer.subscription.deleted` → انسخ الـ Signing Secret
+4. حط الثلاثة بالـ `.env`: `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`
+
+### الدعم الفني (`/tickets`)
+نظام تذاكر حقيقي: المستخدم يفتح تذكرة، يقدر يرد عليها، والمسؤول (role = ADMIN) يشوف كل التذاكر ويرد عليها من نفس الواجهة.
+
+### الشروط والأحكام (`/terms`)
+صفحة ثابتة بشروط استخدام عامة — عدّل نصها من `public/terms.html` حسب احتياجك.
+
 ### Spotify (بحث وتحميل منفصلين)
 يستخدم **Spotify Web API الرسمي** فقط — يرجع اسم الأغنية، الفنان، الغلاف، ورابط **معاينة رسمية 30 ثانية** (لو متوفرة). لا يوجد ولن يُضاف تحميل للملف الكامل، لأن ذلك يتطلب تجاوز حماية Spotify وينتهك حقوق النشر.
 
